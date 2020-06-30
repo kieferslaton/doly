@@ -1,38 +1,105 @@
-.App {
-  text-align: center;
+body{
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.complete{
+  text-decoration: line-through;
+  color: gray;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.pointer:hover {
+  cursor: pointer;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.tag {
+  display: inline-block;
+  font-size: 0.8em;
+  color: var(--main-accent);
+  border: 1px solid var(--main-accent);
+  border-radius: 10px;
+  white-space: nowrap;
 }
 
-.App-link {
-  color: #61dafb;
+.tag-btn {
+  display: inline-block;
+  font-size: 0.8em;
+  color: var(--main-accent);
+  border: 1px solid var(--main-accent);
+  border-radius: 10px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.tag-btn:focus, .tag-btn:active {
+  outline: none;
+}
+
+.plus-button {
+  display: inline-block;
+  font-size: 1.2em;
+  transform: rotate(0deg);
+  transition: all 0.2s;
+}
+
+.dropdown {
+  display: inline-block;
+}
+
+.dropdown-toggle:after{ 
+  content: none;
+}
+
+.dropdown-menu {
+  border: 1px solid var(--main-accent);
+  border-radius: 10px;
+}
+
+.dropdown-menu > input {
+  border: none;
+  border-bottom: 1px solid gray;
+}
+
+.dropdown-tag{
+  cursor: pointer;
+}
+
+input:focus {
+  outline: none !important;
+}
+
+.todo {
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.todo:last-child {
+  border-bottom: none;
+}
+
+.navbar{
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.navbar-brand{
+  font-size: 1.5em;
+  font-weight: bold;
+  color: var(--main-accent)
+}
+
+.rotate{
+  display: inline-block;
+  transform: rotate(45deg);
+}
+
+.login-container{
+  max-width: 800px;
+}
+
+.wrapper > input {
+  border: none;
+}
+
+.mobile-tags-dropdown{
+  position: absolute;
+  z-index: 999;
+  background-color: white;
+  width: 70%;
 }
