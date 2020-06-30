@@ -17,5 +17,5 @@ app.use('/todos', todoRouter);
 app.use('/users', userRouter);
 
 app.listen(process.env.PORT || 5000, () => {
-    console.log(`Server started on port ${port}`)
+    console.log(`Server started on port`)
 });
