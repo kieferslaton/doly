@@ -11,7 +11,7 @@ import TodoList from "./components/TodoList";
 import TodoListMobile from './components/TodoListMobile'
 import NavBar from "./components/NavBar";
 
-const url = "https://do-ly.herokuapp.com"
+const url = process.env.BASE_URL || "http://localhost:5000"
 
 const useWindowSize = () => {
   const isClient = typeof window === 'object';

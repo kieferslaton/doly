@@ -11,7 +11,7 @@ import {
   FaChevronCircleUp
 } from "react-icons/fa";
 
-const url = "https://do-ly.herokuapp.com"
+const url = process.env.BASE_URL || "http://localhost:5000"
 
 const CompleteButton = (props) => {
   const [hover, setHover] = useState(false);
