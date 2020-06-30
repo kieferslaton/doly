@@ -6,7 +6,7 @@ import {
   FaRegTimesCircle,
 } from "react-icons/fa";
 
-const url = process.env.baseURL || "http://localhost:5000"
+const url = "https://do-ly.herokuapp.com" || "http://localhost:5000"
 
 const DeleteButton = (props) => {
   const [hover, setHover] = useState(false);
