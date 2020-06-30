@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const connection = process.env.ATLAS_URI;
+const connection = "mongodb+srv://kieferslaton:aHEROneverruns72591@cluster0-xcgu6.mongodb.net/doly?retryWrites=true&w=majority";
 mongoose.connect(connection, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}).then(() => console.log("Database connected successfully.")).catch(err => console.log(err));
 
 const todoRouter = require('./routes/todo-route');
