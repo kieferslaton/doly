@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import DatePicker from "react-datepicker";
 import $ from "jquery";
 import {
   FaRegCircle,
   FaRegCheckCircle,
-  FaRegTimesCircle,
   FaPlusCircle,
   FaRegTrashAlt,
   FaChevronCircleDown,
-  FaChevronCircleUp
+  FaChevronCircleUp,
 } from "react-icons/fa";
 
-const url = ""
+const url = "";
 
 const CompleteButton = (props) => {
   const [hover, setHover] = useState(false);
@@ -53,6 +53,37 @@ const CompleteButton = (props) => {
   );
 };
 
+const DateButton = (props) => {
+  const [date, setDate] = useState(
+    props.todo.due ? new Date(props.todo.due) : new Date()
+  );
+
+  const handleChange = (date) => {
+    let formattedDate = new Date(date);
+    console.log(formattedDate);
+    axios
+      .post(`${url}/todos/update/${props.todo._id}`, {
+        task: props.todo.task,
+        username: props.todo.username,
+        due: formattedDate,
+        complete: props.todo.complete,
+        tags: props.todo.tags,
+      })
+      .then((res) => console.log(res));
+    setDate(formattedDate);
+  };
+  return (
+      <DatePicker
+        className="date-btn-mobile"
+        selected={date}
+        name="date"
+        dateFormat="MM/dd/yy"
+        onChange={handleChange}
+        popperPlacement="auto"
+      />
+  );
+};
+
 const ToggleButton = (props) => {
   const [showTags, setShowTags] = useState(false);
 
@@ -62,14 +93,18 @@ const ToggleButton = (props) => {
 
   return (
     <>
-    <button
-      class="btn"
-      data-toggle="collapse"
-      data-target={"#collapse" + props.todo._id.toString()}
-      onClick={() => tagToggle()}
-    >
-      {showTags ? <FaChevronCircleUp style={{color: "#292b2c"}} size={30} /> : <FaChevronCircleDown style={{color: "#292b2c"}} size={30} />}
-    </button>
+      <button
+        class="btn"
+        data-toggle="collapse"
+        data-target={"#collapse" + props.todo._id.toString()}
+        onClick={() => tagToggle()}
+      >
+        {showTags ? (
+          <FaChevronCircleUp style={{ color: "#292b2c" }} size={30} />
+        ) : (
+          <FaChevronCircleDown style={{ color: "#292b2c" }} size={30} />
+        )}
+      </button>
     </>
   );
 };
@@ -83,14 +118,20 @@ const TagToggleButton = (props) => {
 
   return (
     <>
-    <button
-      class="btn"
-      data-toggle="collapse"
-      data-target={"#collapse" + props.tagIndex.toString() + props.todo._id.toString()}
-      onClick={() => tagToggle()}
-    >
-      {showTags ? <FaChevronCircleUp style={{color: "#292b2c"}} size={30} /> : <FaChevronCircleDown style={{color: "#292b2c"}} size={30} />}
-    </button>
+      <button
+        class="btn"
+        data-toggle="collapse"
+        data-target={
+          "#collapse" + props.tagIndex.toString() + props.todo._id.toString()
+        }
+        onClick={() => tagToggle()}
+      >
+        {showTags ? (
+          <FaChevronCircleUp style={{ color: "#292b2c" }} size={30} />
+        ) : (
+          <FaChevronCircleDown style={{ color: "#292b2c" }} size={30} />
+        )}
+      </button>
     </>
   );
 };
@@ -153,36 +194,48 @@ const TagForm = (props) => {
 
   return (
     <>
-      <form style={{border: `1px solid ${props.user.color}`, borderRadius: 10}} className="w-100 justify-content-center px-2"
+      <form
+        style={{ border: `1px solid ${props.user.color}`, borderRadius: 10 }}
+        className="w-100 justify-content-center px-2"
         onSubmit={handleSubmit}
       >
         <div className="row">
-        <p className="my-auto col-4" style={{fontSize:'1em', color: props.user.color, fontWeight: 'bold'}}>Add Tag:</p>
-        <div class="wrapper my-auto col-6">
-          <input
-            class="px-2"
-            placeholder="Start Typing"
-            value={tag}
-            onChange={handleChange}
-          />
-          <div class="mobile-tags-dropdown px-2">
-            {autoTags.map((tag) => (
-              <div
-                className="dropdown-tag"
-                key={tag}
-                onClick={() => handleClickTagAdd(tag)}
-              >
-                {tag}
-              </div>
-            ))}
+          <p
+            className="my-auto col-4"
+            style={{
+              fontSize: "1em",
+              color: props.user.color,
+              fontWeight: "bold",
+            }}
+          >
+            Add Tag:
+          </p>
+          <div class="wrapper my-auto col-6">
+            <input
+              class="px-2"
+              placeholder="Start Typing"
+              value={tag}
+              onChange={handleChange}
+            />
+            <div class="mobile-tags-dropdown px-2">
+              {autoTags.map((tag) => (
+                <div
+                  className="dropdown-tag"
+                  key={tag}
+                  onClick={() => handleClickTagAdd(tag)}
+                >
+                  {tag}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="col-1 px-1">
+            <button class="btn" type="submit">
+              <FaPlusCircle size={25} style={{ color: props.user.color }} />
+            </button>
           </div>
         </div>
-        <div class="col-1 px-1">
-        <button class="btn" type="submit"><FaPlusCircle size={25} style={{color: props.user.color}} /></button>
-        </div>
-        </div>
       </form>
-      
     </>
   );
 };
@@ -274,10 +327,8 @@ const TodoList = (props) => {
   };
 
   const removeTask = (id) => {
-    axios
-      .delete(`${url}/todos/${id}`)
-      .then((res) => console.log(res));
-    $('.collapse').collapse('hide')
+    axios.delete(`${url}/todos/${id}`).then((res) => console.log(res));
+    $(".collapse").collapse("hide");
   };
 
   const removeTag = (todo, tag) => {
@@ -329,13 +380,11 @@ const TodoList = (props) => {
                   {todo.task}
                 </div>
                 <div className="col-2 text-center">
-                  <ToggleButton user={props.user} todo={todo}/>
+                  <ToggleButton user={props.user} todo={todo} />
                 </div>
               </div>
               <div className="collapse" id={"collapse" + todo._id.toString()}>
-                <div
-                  className="row mx-2 my-3"
-                >
+                <div className="row mx-2 my-3">
                   {todo.tags.map((tag) => (
                     <div
                       key={tag}
@@ -354,21 +403,39 @@ const TodoList = (props) => {
                       </span>
                     </div>
                   ))}
-                  </div>
-                  <div className="row mx-2 my-3">
+                </div>
+                <div className="row mx-2 my-3">
                   <TagForm
                     style={{
-                      position: 'absolute',
-                      left: 0
+                      position: "absolute",
+                      left: 0,
                     }}
                     todo={todo}
                     user={props.user}
                     globalTags={globalTags}
                   />
+                </div>
+                <div style={{border: `1px solid ${props.user.color}`, borderRadius: 10}} className="row mx-2 my-3 p-2">
+                  <div className="col-4 pl-0 text-left">
+                  <p className="my-auto" style={{fontWeight: 'bold', color: props.user.color}}>Due Date:</p>
                   </div>
-                  <div className="row mx-2 my-3">
-                    <button style={{color:'white', backgroundColor: props.user.color, borderRadius: 10}} class="btn" onClick={() => removeTask(todo._id)}>Delete Task <FaRegTrashAlt /></button>
-                  </div>
+                  <div className="col-4">
+                    <DateButton user={props.user} todo={todo} />
+                    </div>
+                </div>
+                <div className="row mx-2 my-3">
+                  <button
+                    style={{
+                      color: "white",
+                      backgroundColor: props.user.color,
+                      borderRadius: 10,
+                    }}
+                    class="btn"
+                    onClick={() => removeTask(todo._id)}
+                  >
+                    Delete Task <FaRegTrashAlt />
+                  </button>
+                </div>
               </div>
             </>
           ))}
@@ -379,81 +446,106 @@ const TodoList = (props) => {
     return (
       <div className="container mt-1">
         {tagLists.map((tag, index) => {
-
           let tagIndex = index;
-          for (let i=0; i<tag.list.length; i++){
-            tag.list[i].tagIndex = tagIndex
+          for (let i = 0; i < tag.list.length; i++) {
+            tag.list[i].tagIndex = tagIndex;
           }
 
-          return(
-          <div className="container my-5">
-            <h2 style={{ color: props.user.color }}>{tag.name}</h2>
-            <>
-            {tag.list.map((todo) => (
-            <>
-              <div
-                className="row justify-content-center py-2 todo-mobile"
-                key={todo._id}
-              >
-                <div className="col-2 text-center my-auto mx-0 px-0">
-                  <CompleteButton
-                    user={props.user}
-                    todo={todo}
-                    markComplete={markComplete}
-                  />
-                </div>
-                <div
-                  className={`${todo.complete ? "complete" : ""} col-8 my-auto`}
-                >
-                  {todo.task}
-                </div>
-                <div className="col-2 text-center">
-                  <TagToggleButton todo={todo} tagIndex={todo.tagIndex} />
-                </div>
-              </div>
-              <div className="collapse" id={"collapse" + todo.tagIndex.toString() + todo._id.toString()}>
-                <div
-                  className="row mx-2 my-3"
-                >
-                  {todo.tags.map((tag) => (
+          return (
+            <div className="container my-5">
+              <h2 style={{ color: props.user.color }}>{tag.name}</h2>
+              <>
+                {tag.list.map((todo) => (
+                  <>
                     <div
-                      key={tag}
-                      className="tag p-2 m-1"
-                      style={{
-                        color: props.user.color,
-                        border: `1px solid ${props.user.color}`,
-                      }}
+                      className="row justify-content-center py-2 todo-mobile"
+                      key={todo._id}
                     >
-                      {`${tag}  `}
-                      <span
-                        className="pointer rotate"
-                        onClick={() => removeTag(todo, tag)}
+                      <div className="col-2 text-center my-auto mx-0 px-0">
+                        <CompleteButton
+                          user={props.user}
+                          todo={todo}
+                          markComplete={markComplete}
+                        />
+                      </div>
+                      <div
+                        className={`${
+                          todo.complete ? "complete" : ""
+                        } col-8 my-auto`}
                       >
-                        +
-                      </span>
+                        {todo.task}
+                      </div>
+                      <div className="col-2 text-center">
+                        <TagToggleButton todo={todo} tagIndex={todo.tagIndex} />
+                      </div>
                     </div>
-                  ))}
+                    <div
+                      className="collapse"
+                      id={
+                        "collapse" +
+                        todo.tagIndex.toString() +
+                        todo._id.toString()
+                      }
+                    >
+                      <div className="row mx-2 my-3">
+                        {todo.tags.map((tag) => (
+                          <div
+                            key={tag}
+                            className="tag p-2 m-1"
+                            style={{
+                              color: props.user.color,
+                              border: `1px solid ${props.user.color}`,
+                            }}
+                          >
+                            {`${tag}  `}
+                            <span
+                              className="pointer rotate"
+                              onClick={() => removeTag(todo, tag)}
+                            >
+                              +
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="row mx-2 my-3">
+                        <TagForm
+                          style={{
+                            position: "absolute",
+                            left: 0,
+                          }}
+                          todo={todo}
+                          user={props.user}
+                          globalTags={globalTags}
+                        />
+                      </div>
+                      <div style={{border: `1px solid ${props.user.color}`, borderRadius: 10}} className="row mx-2 my-3 p-2">
+                  <div className="col-4 pl-0 text-left">
+                  <p className="my-auto" style={{fontWeight: 'bold', color: props.user.color}}>Due Date:</p>
                   </div>
-                  <div className="row mx-2 my-3">
-                  <TagForm
-                    style={{
-                      position: 'absolute',
-                      left: 0
-                    }}
-                    todo={todo}
-                    user={props.user}
-                    globalTags={globalTags}
-                  />
-                  </div>
-                  <div className="row mx-2 my-3">
-                    <button style={{color:'white', backgroundColor: props.user.color, borderRadius: 10}}class="btn" onClick={() => removeTask(todo._id)}>Delete Task <FaRegTrashAlt /></button>
-                  </div>
-              </div>
-            </>
-          ))}
-            </>
-          </div>
-        )})}
+                  <div className="col-4">
+                    <DateButton user={props.user} todo={todo} />
+                    </div>
+                </div>
+                      <div className="row mx-2 my-3">
+                        <button
+                          style={{
+                            color: "white",
+                            backgroundColor: props.user.color,
+                            borderRadius: 10,
+                          }}
+                          class="btn"
+                          onClick={() => removeTask(todo._id)}
+                        >
+                          Delete Task <FaRegTrashAlt />
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ))}
+              </>
+            </div>
+          );
+        })}
       </div>
     );
   }

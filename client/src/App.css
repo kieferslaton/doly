@@ -15,8 +15,6 @@ body{
 .tag {
   display: inline-block;
   font-size: 0.8em;
-  color: var(--main-accent);
-  border: 1px solid var(--main-accent);
   border-radius: 10px;
   white-space: nowrap;
 }
@@ -24,12 +22,21 @@ body{
 .tag-btn {
   display: inline-block;
   font-size: 0.8em;
-  color: var(--main-accent);
-  border: 1px solid var(--main-accent);
   border-radius: 10px;
 }
+.date-btn {
+  display: inline-block;
+  font-size: 0.8em;
+  border: none;
+  color: #6c757d;
+}
 
-.tag-btn:focus, .tag-btn:active {
+.date-btn-mobile{
+  border: none;
+  color: #6c757d;
+}
+
+.tag-btn:focus, .tag-btn:active, .date-btn:focus, .date-btn:active {
   outline: none;
 }
 

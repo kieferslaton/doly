@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import DatePicker from 'react-datepicker';
+import {format} from 'date-fns'
+import 'react-datepicker/dist/react-datepicker.css'
 import {
   FaRegCircle,
   FaRegCheckCircle,
@@ -68,6 +71,30 @@ const CompleteButton = (props) => {
     </>
   );
 };
+
+const DateButton = (props) => {
+  const [date, setDate] = useState(props.todo.due ? new Date(props.todo.due) : new Date());
+
+  const handleChange = (date) => {
+    let formattedDate = new Date(date)
+    console.log(formattedDate)
+    axios
+      .post(`${url}/todos/update/${props.todo._id}`, {
+        task: props.todo.task,
+        username: props.todo.username,
+        due: formattedDate,
+        complete: props.todo.complete,
+        tags: props.todo.tags
+      })
+      .then((res) => console.log(res));
+      setDate(formattedDate)
+  }
+    return(
+      <div className="p-1" style={{border: `1px solid ${props.user.color}`, color: props.user.color, borderRadius: 10, maxWidth: 100}}>
+        <DatePicker className="date-btn text-center w-100" selected={date} name="date" dateFormat="MM/dd/yy" onChange={handleChange} popperPlacement="auto" />
+      </div>
+    )
+}
 
 const TagForm = (props) => {
   const [tag, setTag] = useState("");
@@ -242,6 +269,10 @@ const TodoList = (props) => {
       .then((res) => console.log(res));
   };
 
+  const updateDate = (todo) => {
+
+  }
+
   const removeTask = (id) => {
     axios
       .delete(`${url}/todos/${id}`)
@@ -293,7 +324,7 @@ const TodoList = (props) => {
               >
                 {todo.task}
               </div>
-              <div className="col-6">
+              <div className="col-4">
                 {todo.tags.map((tag) => (
                   <div
                     key={tag}
@@ -317,6 +348,9 @@ const TodoList = (props) => {
                   user={props.user}
                   globalTags={globalTags}
                 />
+              </div>
+              <div className="col-2 my-auto">
+                <DateButton user={props.user} todo={todo} updateDate={updateDate} />
               </div>
               <div className="col-1 my-auto text-right">
                 <DeleteButton
@@ -343,50 +377,51 @@ const TodoList = (props) => {
                   key={todo._id}
                 >
                   <div className="col-1 my-auto">
-                    <CompleteButton
-                      user={props.user}
-                      todo={todo}
-                      markComplete={markComplete}
-                    />
-                  </div>
+                  <CompleteButton
+                  user={props.user}
+                  todo={todo}
+                  markComplete={markComplete}
+                />
+              </div>
+              <div
+                className={`${todo.complete ? "complete" : ""} col-4 my-auto`}
+              >
+                {todo.task}
+              </div>
+              <div className="col-4">
+                {todo.tags.map((tag) => (
                   <div
-                    className={`${
-                      todo.complete ? "complete" : ""
-                    } col-4 my-auto`}
+                    key={tag}
+                    className="tag p-2 m-1"
+                    style={{
+                      color: props.user.color,
+                      border: `1px solid ${props.user.color}`,
+                    }}
                   >
-                    {todo.task}
+                    {`${tag}  `}
+                    <span
+                      className="pointer rotate"
+                      onClick={() => removeTag(todo, tag)}
+                    >
+                      +
+                    </span>
                   </div>
-                  <div className="col-6">
-                    {todo.tags.map((tag) => (
-                      <div
-                        key={tag}
-                        className="tag p-2 m-1"
-                        style={{
-                          color: props.user.color,
-                          border: `1px solid ${props.user.color}`,
-                        }}
-                      >
-                        {`${tag}  `}
-                        <span
-                          className="pointer rotate"
-                          onClick={() => removeTag(todo, tag)}
-                        >
-                          +
-                        </span>
-                      </div>
-                    ))}
-                    <TagForm
-                      todo={todo}
-                      user={props.user}
-                      globalTags={globalTags}
-                    />
-                  </div>
-                  <div className="col-1 my-auto text-right">
-                    <DeleteButton
-                      user={props.user}
-                      todo={todo}
-                      removeTask={removeTask}
-                    />
+                ))}
+                <TagForm
+                  todo={todo}
+                  user={props.user}
+                  globalTags={globalTags}
+                />
+              </div>
+              <div className="col-2 my-auto">
+                <DateButton user={props.user} todo={todo} updateDate={updateDate} />
+              </div>
+              <div className="col-1 my-auto text-right">
+                <DeleteButton
+                  user={props.user}
+                  todo={todo}
+                  removeTask={removeTask}
+                />
                   </div>
                 </div>
               ))}

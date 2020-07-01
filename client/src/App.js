@@ -1,29 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Cookies from 'js-cookie';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import Cookies from "js-cookie";
+import { BrowserRouter as Router } from "react-router-dom";
+
 import "bootstrap/dist/css/bootstrap.css";
-import $ from "jquery";
-import Popper from "popper.js";
 import "bootstrap/dist/js/bootstrap.bundle";
 import "./App.css";
 
 import TodoList from "./components/TodoList";
-import TodoListMobile from './components/TodoListMobile'
+import TodoListMobile from "./components/TodoListMobile";
 import NavBar from "./components/NavBar";
-import { handleLogin, handleLogout } from './auth';
+import { handleLogin, handleLogout } from "./auth";
+import { FaCheck } from "react-icons/fa";
 
-const url = ""
+const url = "";
 
 const useWindowSize = () => {
-  const isClient = typeof window === 'object';
+  const isClient = typeof window === "object";
 
   const getSize = () => {
-    return{
+    return {
       width: isClient ? window.innerWidth : undefined,
-      height: isClient ? window.innerHeight : undefined
+      height: isClient ? window.innerHeight : undefined,
     };
-  }
+  };
 
   const [windowSize, setWindowSize] = useState(getSize);
 
@@ -34,66 +34,70 @@ const useWindowSize = () => {
 
     const handleResize = () => {
       setWindowSize(getSize());
-    }
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return windowSize
-}
+  return windowSize;
+};
 
 function App() {
-  const [token, setToken] = useState(Cookies.get('token'))
+  const [token, setToken] = useState(Cookies.get("token"));
   const [user, setUser] = useState("");
+  const [usernames, setUsernames] = useState([]);
   const [isLogin, setIsLogin] = useState(true);
   const [loginUser, setLoginUser] = useState("");
   const [loginPass, setLoginPass] = useState("");
-  const [loginUserError, setLoginUserError] = useState('');
-  const [loginPassError, setLoginPassError] = useState('');
+  const [loginUserError, setLoginUserError] = useState("");
+  const [loginPassError, setLoginPassError] = useState("");
   const [signupUser, setSignupUser] = useState("");
   const [signupPass1, setSignupPass1] = useState("");
   const [signupPass2, setSignupPass2] = useState("");
   const [signupUserError, setSignupUserError] = useState("");
-  const [signupPass1Error, setSignupPass1Error] = useState(false);
+  const [signupPass1Val, setSignupPass1Val] = useState({
+    length: false,
+    nums: false,
+  });
   const [signupPass2Error, setSignupPass2Error] = useState("");
   const [isInbox, setIsInbox] = useState(true);
 
   const size = useWindowSize();
 
   const setUserColor = (color) => {
-    if(user){
-    axios
-      .post(`${url}/users/update/${user._id}`, {
-        username: user.username,
-        password: user.password,
-        color: color
-      })
-      .then((res) => {
-        return axios.get(`${url}/users/${user._id}`).then((res) => {
-          setUser(res.data)
+    if (user) {
+      axios
+        .post(`${url}/users/update/${user._id}`, {
+          username: user.username,
+          password: user.password,
+          color: color,
         })
-      })
+        .then((res) => {
+          return axios.get(`${url}/users/${user._id}`).then((res) => {
+            setUser(res.data);
+          });
+        });
     }
-    console.log(user);
-  }
+  };
 
   const handleTagsToggle = () => {
     setIsInbox(!isInbox);
-  }
+  };
 
   useEffect(() => {
-    axios.get(`${url}/users/`).then((res) => {
-      if(user) setUser(user);
-    });
+      if (user) setUser(user);
   }, [user]);
 
   useEffect(() => {
-    if(token){
-        console.log(token)
-        const payload = {headers: {authorization: token}}
-        axios.post(`${url}/users/accounts`, {}, payload).then(res => setUser(res.data)).catch(err => console.log(err.status))
-      }
-    }, [])
+    if (token) {
+      console.log(token);
+      const payload = { headers: { authorization: token } };
+      axios
+        .post(`${url}/users/accounts`, {}, payload)
+        .then((res) => setUser(res.data))
+        .catch((err) => console.log(err.status));
+    }
+  }, []);
 
   const handleLoginUserChange = (e) => {
     setLoginUser(e.target.value);
@@ -103,73 +107,92 @@ function App() {
     setLoginPass(e.target.value);
   };
 
+  const handleSignupPassChange = (e) => {
+    if(e.target.value.length > 10){
+      setSignupPass1Val({...signupPass1Val, length: true})
+    }
+    if(/\d/.test(e.target.value)){
+      setSignupPass1Val({...signupPass1Val, nums: true})
+    }
+    setSignupPass1(e.target.value);
+  }
+
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${url}/users/login`, {
-      username: loginUser,
-      password: loginPass
-    }).then((res) => {
-      handleLogin(res.data)
-      return axios.get(`${url}/users/`).then((res) => {
-        setUser(res.data.find((user) => user.username === loginUser));
+    axios
+      .post(`${url}/users/login`, {
+        username: loginUser,
+        password: loginPass,
       })
-    }).catch(err => {
-        if(err.response.status === 401) {
-          setLoginUserError('')
-          setLoginPassError('Incorrect Password.')
+      .then((res) => {
+        handleLogin(res.data);
+        return axios.get(`${url}/users/`).then((res) => {
+          setUser(res.data.find((user) => user.username === loginUser));
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          setLoginUserError("");
+          setLoginPassError("Incorrect Password.");
         } else if (err.response.status === 404) {
-          setLoginUserError('Username not found.')
-          setLoginPassError('')
+          setLoginUserError("Username not found.");
+          setLoginPassError("");
         }
-    })
+      });
   };
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
-          axios
-            .post(`${url}/users/signup`, {
-              username: signupUser,
-              password: signupPass1,
-              password2: signupPass2
-            })
-            .then((res) => {
-            console.log(res.data)
-            handleLogin(res.data)
-            return axios.get(`${url}/users/`).then((res) => {
-            console.log(res.data)
-            setUser(res.data.find((user) => user.username === signupUser));
-          })}).catch(err => {
-            if(err.response.status === 401) {
-              setSignupUserError('')
-              setSignupPass2Error("Passwords don't match.")
-            } else if (err.response.status === 400) {
-              setSignupPass2Error('')
-              setSignupUserError("User already exists.")
-            }
-          })
-        };
+    axios
+      .post(`${url}/users/signup`, {
+        username: signupUser,
+        password: signupPass1,
+        password2: signupPass2,
+      })
+      .then((res) => {
+        console.log(res.data);
+        handleLogin(res.data);
+        return axios.get(`${url}/users/`).then((res) => {
+          console.log(res.data);
+          setUser(res.data.find((user) => user.username === signupUser));
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          setSignupUserError("");
+          setSignupPass2Error("Passwords don't match.");
+        } else if (err.response.status === 400) {
+          setSignupPass2Error("");
+          setSignupUserError("User already exists.");
+        }
+      });
+  };
 
   const logOut = () => {
     setUser("");
-    handleLogout(token)
+    handleLogout(token);
   };
 
   if (!user) {
     return (
       <Router>
-        <NavBar user={user} logOut={logOut} size={size}/>
+        <NavBar user={user} logOut={logOut} size={size} />
         <div className="container login-container">
           <div className="row border rounded justify-content-center p-2">
             <div className="col-10 col-md-6 text-center">
               <button
                 onClick={() => setIsLogin(true)}
-                className={`${isLogin ? "btn-dark" : "border border-dark"} btn w-50 font-weight-bold`}
+                className={`${
+                  isLogin ? "btn-dark" : "border border-dark"
+                } btn w-50 font-weight-bold`}
               >
                 Log In
               </button>
               <button
                 onClick={() => setIsLogin(false)}
-                className={`${isLogin ? "border border-dark" : "btn-dark"} btn w-50 font-weight-bold`}
+                className={`${
+                  isLogin ? "border border-dark" : "btn-dark"
+                } btn w-50 font-weight-bold`}
               >
                 Sign Up
               </button>
@@ -233,12 +256,13 @@ function App() {
                     type="password"
                     className="form-control"
                     id="signupPassword1"
-                    onChange={(e) => setSignupPass1(e.target.value)}
+                    onChange={handleSignupPassChange}
                   />
-                  <small
-                    className={`${signupPass1Error ? "" : "d-none"} form-text`}
-                  >
-                    Password must be at least 6 characters long.
+                  <small>
+                    Password must be at least 10 characters.  <FaCheck style={{color: 'green'}}className={signupPass1Val.length ? '' : 'd-none'}/>
+                  </small><br />
+                  <small>
+                    Password must contain at least one number.  <FaCheck style={{color: 'green'}}className={signupPass1Val.nums ? '' : 'd-none'}/>
                   </small>
                 </div>
                 <div className="form-group">
@@ -265,20 +289,34 @@ function App() {
       </Router>
     );
   } else {
-    if (size.width > 768){
-    return (
-      <Router>
-        <NavBar user={user} setUserColor={setUserColor} handleTagsToggle={handleTagsToggle} isInbox={isInbox} logOut={logOut} size={size} />
-        <TodoList user={user} isInbox={isInbox} />
-      </Router>
-    );
+    if (size.width > 768) {
+      return (
+        <Router>
+          <NavBar
+            user={user}
+            setUserColor={setUserColor}
+            handleTagsToggle={handleTagsToggle}
+            isInbox={isInbox}
+            logOut={logOut}
+            size={size}
+          />
+          <TodoList user={user} isInbox={isInbox} />
+        </Router>
+      );
     } else {
       return (
         <Router>
-        <NavBar user={user} setUserColor={setUserColor} handleTagsToggle={handleTagsToggle} isInbox={isInbox} logOut={logOut} size={size} />
-        <TodoListMobile user={user} isInbox={isInbox} />
-      </Router>
-      )
+          <NavBar
+            user={user}
+            setUserColor={setUserColor}
+            handleTagsToggle={handleTagsToggle}
+            isInbox={isInbox}
+            logOut={logOut}
+            size={size}
+          />
+          <TodoListMobile user={user} isInbox={isInbox} />
+        </Router>
+      );
     }
   }
 }
