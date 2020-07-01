@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import DatePicker from "react-datepicker";
+import DatePicker from 'react-mobile-datepicker';
+import { format } from 'date-fns';
 import $ from "jquery";
 import {
   FaRegCircle,
@@ -57,9 +58,22 @@ const DateButton = (props) => {
   const [date, setDate] = useState(
     props.todo.due ? new Date(props.todo.due) : new Date()
   );
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleClick = () => {
+    setIsOpen(true)
+  }
+
+  const handleCancel = () => {
+    setIsOpen(false)
+  }
 
   const handleChange = (date) => {
-    let formattedDate = new Date(date);
+    setDate(new Date(date));
+  };
+
+  const handleSelect = () => {
+    const formattedDate = new Date(date)
     console.log(formattedDate);
     axios
       .post(`${url}/todos/update/${props.todo._id}`, {
@@ -70,17 +84,14 @@ const DateButton = (props) => {
         tags: props.todo.tags,
       })
       .then((res) => console.log(res));
-    setDate(formattedDate);
-  };
+    setIsOpen(false)
+  }
+
   return (
-      <DatePicker
-        className="date-btn-mobile"
-        selected={date}
-        name="date"
-        dateFormat="MM/dd/yy"
-        onChange={handleChange}
-        popperPlacement="auto"
-      />
+    <>
+    <a className="btn mobile-date-btn" onClick={handleClick}>{format(date,"P")}</a>
+    <DatePicker value={date} isOpen={isOpen} onCancel={handleCancel} onChange={handleChange} onSelect={handleSelect} cancelText="Cancel" confirmText="Confirm" theme="ios" />
+    </>
   );
 };
 
