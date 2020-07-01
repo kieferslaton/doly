@@ -68,12 +68,8 @@ const DateButton = (props) => {
     setIsOpen(false)
   }
 
-  const handleChange = (date) => {
-    setDate(new Date(date));
-  };
-
-  const handleSelect = () => {
-    const formattedDate = new Date(date)
+  const handleChange = (e) => {
+    const formattedDate = (new Date(e.target.value));
     console.log(formattedDate);
     axios
       .post(`${url}/todos/update/${props.todo._id}`, {
@@ -84,13 +80,12 @@ const DateButton = (props) => {
         tags: props.todo.tags,
       })
       .then((res) => console.log(res));
-    setIsOpen(false)
-  }
+    setDate(formattedDate);
+  };
 
   return (
     <>
-    <a className="btn mobile-date-btn" onClick={handleClick}>{format(date,"P")}</a>
-    <DatePicker value={date} isOpen={isOpen} onCancel={handleCancel} onChange={handleChange} onSelect={handleSelect} cancelText="Cancel" confirmText="Confirm" theme="ios" />
+    <input className="date-btn-mobile" value={date} type="date" onChange={handleChange} />
     </>
   );
 };
