@@ -19,9 +19,9 @@ const userRouter = require('./routes/user-route');
 app.use('/todos', todoRouter);
 app.use('/users', userRouter);
 
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"))
-})
+//app.get("*", (req, res) => {
+//    res.sendFile(path.join(__dirname, "client", "build", "index.html"))
+//})
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server started on port`)
