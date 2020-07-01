@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Cookies from 'js-cookie';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import $ from "jquery";
@@ -10,6 +11,7 @@ import "./App.css";
 import TodoList from "./components/TodoList";
 import TodoListMobile from './components/TodoListMobile'
 import NavBar from "./components/NavBar";
+import { handleLogin, handleLogout } from './auth';
 
 const url = ""
 
@@ -41,20 +43,19 @@ const useWindowSize = () => {
 }
 
 function App() {
+  const [token, setToken] = useState(Cookies.get('token'))
   const [user, setUser] = useState("");
-  const [users, setUsers] = useState([]);
-  const [usernames, setUsernames] = useState([]);
   const [isLogin, setIsLogin] = useState(true);
   const [loginUser, setLoginUser] = useState("");
   const [loginPass, setLoginPass] = useState("");
-  const [loginUserError, setLoginUserError] = useState(false);
-  const [loginPassError, setLoginPassError] = useState(false);
+  const [loginUserError, setLoginUserError] = useState('');
+  const [loginPassError, setLoginPassError] = useState('');
   const [signupUser, setSignupUser] = useState("");
   const [signupPass1, setSignupPass1] = useState("");
   const [signupPass2, setSignupPass2] = useState("");
-  const [signupUserError, setSignupUserError] = useState(false);
+  const [signupUserError, setSignupUserError] = useState("");
   const [signupPass1Error, setSignupPass1Error] = useState(false);
-  const [signupPass2Error, setSignupPass2Error] = useState(false);
+  const [signupPass2Error, setSignupPass2Error] = useState("");
   const [isInbox, setIsInbox] = useState(true);
 
   const size = useWindowSize();
@@ -82,11 +83,17 @@ function App() {
 
   useEffect(() => {
     axios.get(`${url}/users/`).then((res) => {
-      setUsers(res.data);
-      setUsernames(res.data.map((user) => user.username));
       if(user) setUser(user);
     });
   }, [user]);
+
+  useEffect(() => {
+    if(token){
+        console.log(token)
+        const payload = {headers: {authorization: token}}
+        axios.post(`${url}/users/accounts`, {}, payload).then(res => setUser(res.data)).catch(err => console.log(err.status))
+      }
+    }, [])
 
   const handleLoginUserChange = (e) => {
     setLoginUser(e.target.value);
@@ -98,51 +105,53 @@ function App() {
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    if (!usernames.includes(loginUser)) {
-      setLoginUserError(true);
-    } else {
-      setLoginUserError(false);
-      const user = users.find((user) => user.username === loginUser);
-      if (user.password !== loginPass) {
-        setLoginPassError(true);
-      } else {
-        setLoginPassError(false);
-        setUser(user);
-      }
-    }
+    axios.post(`${url}/users/login`, {
+      username: loginUser,
+      password: loginPass
+    }).then((res) => {
+      handleLogin(res.data)
+      return axios.get(`${url}/users/`).then((res) => {
+        setUser(res.data.find((user) => user.username === loginUser));
+      })
+    }).catch(err => {
+        if(err.response.status === 401) {
+          setLoginUserError('')
+          setLoginPassError('Incorrect Password.')
+        } else if (err.response.status === 404) {
+          setLoginUserError('Username not found.')
+          setLoginPassError('')
+        }
+    })
   };
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
-    if (usernames.includes(signupUser)) {
-      setSignupUserError(true);
-    } else {
-      setSignupUserError(false);
-      if (signupPass1.length < 6) {
-        setSignupPass1Error(true);
-      } else {
-        setSignupPass1Error(false);
-        if (signupPass1 !== signupPass2) {
-          setSignupPass2Error(true);
-        } else {
-          setSignupPass2Error(false);
           axios
-            .post(`${url}/users/add`, {
+            .post(`${url}/users/signup`, {
               username: signupUser,
               password: signupPass1,
+              password2: signupPass2
             })
             .then((res) => {
-           return axios.get(`${url}/users/`).then((res) => {
+            console.log(res.data)
+            handleLogin(res.data)
+            return axios.get(`${url}/users/`).then((res) => {
             console.log(res.data)
             setUser(res.data.find((user) => user.username === signupUser));
-          })})
-        }
-      }
-    }
-  };
+          })}).catch(err => {
+            if(err.response.status === 401) {
+              setSignupUserError('')
+              setSignupPass2Error("Passwords don't match.")
+            } else if (err.response.status === 400) {
+              setSignupPass2Error('')
+              setSignupUserError("User already exists.")
+            }
+          })
+        };
 
   const logOut = () => {
     setUser("");
+    handleLogout(token)
   };
 
   if (!user) {

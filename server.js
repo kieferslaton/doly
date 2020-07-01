@@ -15,13 +15,15 @@ mongoose.connect(connection, {useNewUrlParser: true, useUnifiedTopology: true, u
 
 const todoRouter = require('./routes/todo-route');
 const userRouter = require('./routes/user-route');
+//const signupRouter = require('./routes/signup-route');
 
 app.use('/todos', todoRouter);
 app.use('/users', userRouter);
+//app.use('/signup', signupRouter)
 
-//app.get("*", (req, res) => {
-//    res.sendFile(path.join(__dirname, "client", "build", "index.html"))
-//})
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"))
+})
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server started on port`)
