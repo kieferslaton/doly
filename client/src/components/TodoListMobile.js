@@ -157,8 +157,8 @@ const TagForm = (props) => {
         onSubmit={handleSubmit}
       >
         <div className="row">
-        <p className="my-auto col-3" style={{fontSize:'1em', color: props.user.color, fontWeight: 'bold'}}>Add Tag:</p>
-        <div class="wrapper my-auto col-7">
+        <p className="my-auto col-4" style={{fontSize:'1em', color: props.user.color, fontWeight: 'bold'}}>Add Tag:</p>
+        <div class="wrapper my-auto col-6">
           <input
             class="px-2"
             placeholder="Start Typing"
@@ -177,7 +177,7 @@ const TagForm = (props) => {
             ))}
           </div>
         </div>
-        <div class="col-1">
+        <div class="col-1 px-1">
         <button class="btn" type="submit"><FaPlusCircle size={25} style={{color: props.user.color}} /></button>
         </div>
         </div>

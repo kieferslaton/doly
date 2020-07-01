@@ -41,13 +41,7 @@ const useWindowSize = () => {
 }
 
 function App() {
-  const [user, setUser] = useState({
-    "color": "rgb(182, 75, 81)",
-    "_id": "5ef8cebdd0422246f769168a",
-    "username": "kieferslaton",
-    "password": "aHEROneverruns72591",
-    "__v": 0
-  } );
+  const [user, setUser] = useState("");
   const [users, setUsers] = useState([]);
   const [usernames, setUsernames] = useState([]);
   const [isLogin, setIsLogin] = useState(true);
@@ -160,13 +154,13 @@ function App() {
             <div className="col-10 col-md-6 text-center">
               <button
                 onClick={() => setIsLogin(true)}
-                className={`${isLogin ? "btn-dark" : "border border-dark"} btn w-25 font-weight-bold`}
+                className={`${isLogin ? "btn-dark" : "border border-dark"} btn w-50 font-weight-bold`}
               >
                 Log In
               </button>
               <button
                 onClick={() => setIsLogin(false)}
-                className={`${isLogin ? "border border-dark" : "btn-dark"} btn w-25 font-weight-bold`}
+                className={`${isLogin ? "border border-dark" : "btn-dark"} btn w-50 font-weight-bold`}
               >
                 Sign Up
               </button>
@@ -253,7 +247,7 @@ function App() {
                   </small>
                 </div>
                 <button type="submit" className="btn btn-dark font-weight-bold">
-                  Log In
+                  Sign Up
                 </button>
               </form>
             </div>
