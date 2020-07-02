@@ -125,33 +125,6 @@ const ToggleButton = (props) => {
   );
 };
 
-const TagToggleButton = (props) => {
-  const [showTags, setShowTags] = useState(false);
-
-  const tagToggle = () => {
-    setShowTags(!showTags);
-  };
-
-  return (
-    <>
-      <button
-        class="btn"
-        data-toggle="collapse"
-        data-target={
-          "#collapse" + props.tagIndex.toString() + props.todo._id.toString()
-        }
-        onClick={() => tagToggle()}
-      >
-        {showTags ? (
-          <FaChevronCircleUp style={{ color: "#292b2c" }} size={30} />
-        ) : (
-          <FaChevronCircleDown style={{ color: "#292b2c" }} size={30} />
-        )}
-      </button>
-    </>
-  );
-};
-
 const TagForm = (props) => {
   const [tag, setTag] = useState("");
   const [autoTags, setAutoTags] = useState([]);
@@ -227,7 +200,7 @@ const TagForm = (props) => {
           </p>
           <div class="wrapper my-auto col-6 px-0">
             <input
-              class="px-1"
+              class="px-1 mw-100 w-70"
               placeholder="Start Typing"
               value={tag}
               onChange={handleChange}
@@ -279,7 +252,10 @@ const TodoForm = ({ user }) => {
         <div className="col-12 col-md-6">
           <form onSubmit={handleSubmit}>
             <input
-              className="w-100 border border-dark rounded p-2 text-center"
+              style={{
+                border: `1px solid #d3d3d3`
+              }}
+              className="w-100 rounded p-2 text-center"
               value={task}
               onChange={handleChange}
               placeholder="New Task"
@@ -319,7 +295,7 @@ const Todo = ({ user, todo, globalTags, removeTask }) => {
   return (
     <>
       <div
-        className="row justify-content-center p-2 todo-mobile"
+        className="row justify-content-center p-2 todo-mobile mx-0 mw-100 w-100"
         key={todo._id}
       >
         <div className="col-2 text-center my-auto mx-0 px-0">
@@ -332,7 +308,7 @@ const Todo = ({ user, todo, globalTags, removeTask }) => {
           <ToggleButton user={user} todo={todo} />
         </div>
       </div>
-      <div className="w-100 collapse container-fluid px-1 my-3 pb-3 todo-drop-mobile" id={"collapse" + todo._id.toString()}>
+      <div className="w-100 collapse container-fluid px-1 my-0 pt-2 pb-3 todo-drop-mobile" id={"collapse" + todo._id.toString()}>
         <div className="row mx-2 my-2">
           {todo.tags.map((tag) => (
             <div
@@ -460,7 +436,7 @@ const TodoList = (props) => {
     return (
       <>
         <TodoForm user={props.user} />
-        <div className="container-fluid mt-3 px-0">
+        <div className="container-fluid mt-3 px-0 mw-100">
           {todos.map((todo) => (
             <Todo
               todo={todo}
@@ -474,7 +450,7 @@ const TodoList = (props) => {
     );
   } else {
     return (
-      <div className="container mt-1 px-0">
+      <div className="container mt-1 px-0 mw-100">
         {tagLists.map((tag, index) => {
           let tagIndex = index;
           for (let i = 0; i < tag.list.length; i++) {

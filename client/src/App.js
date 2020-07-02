@@ -100,7 +100,7 @@ function App() {
   }, []);
 
   const handleLoginUserChange = (e) => {
-    setLoginUser(e.target.value);
+    setLoginUser(e.target.value.toLowerCase());
   };
 
   const handleLoginPassChange = (e) => {
@@ -145,7 +145,7 @@ function App() {
     e.preventDefault();
     axios
       .post(`${url}/users/signup`, {
-        username: signupUser,
+        username: signupUser.toLowerCase(),
         password: signupPass1,
         password2: signupPass2,
       })
@@ -154,7 +154,7 @@ function App() {
         handleLogin(res.data);
         return axios.get(`${url}/users/`).then((res) => {
           console.log(res.data);
-          setUser(res.data.find((user) => user.username === signupUser));
+          setUser(res.data.find((user) => user.username === signupUser.toLowerCase()));
         });
       })
       .catch((err) => {
