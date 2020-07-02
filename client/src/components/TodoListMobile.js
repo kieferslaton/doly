@@ -86,7 +86,12 @@ const DateButton = (props) => {
   return (
     <>
       <input
-        className="date-btn-mobile"
+        style={{
+          position: 'relative',
+          left: -10,
+          whiteSpace: 'nowrap'
+        }}
+        className="date-btn-mobile mx-0"
         value={format(date, "yyyy-MM-dd")}
         type="date"
         onChange={handleChange}
@@ -220,9 +225,9 @@ const TagForm = (props) => {
           >
             Add Tag:
           </p>
-          <div class="wrapper my-auto col-6">
+          <div class="wrapper my-auto col-6 px-0">
             <input
-              class="px-2"
+              class="px-1"
               placeholder="Start Typing"
               value={tag}
               onChange={handleChange}
@@ -366,7 +371,7 @@ const Todo = ({ user, todo, globalTags, removeTask }) => {
               Due Date:
             </p>
           </div>
-          <div className="col-6">
+          <div className="col-4 pl-0">
             <DateButton user={user} todo={todo} />
           </div>
         </div>
