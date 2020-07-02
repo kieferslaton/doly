@@ -36,6 +36,11 @@ body{
   color: #6c757d;
 }
 
+input[type="date"]{
+  -webkit-appearance: textfield;
+  display: block;
+}
+
 .tag-btn:focus, .tag-btn:active, .date-btn:focus, .date-btn:active {
   outline: none;
 }
@@ -109,4 +114,18 @@ input:focus {
   z-index: 999;
   background-color: white;
   width: 70%;
+  border: 1px solid #d3d3d3;
+  border-top: none;
+}
+
+.todo-mobile{
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.todo-drop-mobile{
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.todo-mobile:last-child{
+  border-bottom: none;
 }
