@@ -328,7 +328,7 @@ const Todo = ({ user, todo, globalTags, removeTask }) => {
         </div>
       </div>
       <div className="w-100 collapse container-fluid px-1 my-3 pb-3 todo-drop-mobile" id={"collapse" + todo._id.toString()}>
-        <div className="row mx-1 my-1 ">
+        <div className="row mx-2 my-2">
           {todo.tags.map((tag) => (
             <div
               key={tag}
@@ -348,7 +348,7 @@ const Todo = ({ user, todo, globalTags, removeTask }) => {
             </div>
           ))}
         </div>
-        <div className="row mx-1 my-1">
+        <div className="row mx-2 my-2">
           <TagForm
             todo={todo}
             user={user}
@@ -356,7 +356,7 @@ const Todo = ({ user, todo, globalTags, removeTask }) => {
           />
         </div>
         <div
-          className="row mx-1 my-1 p-2"
+          className="row mx-2 my-2 p-2"
         >
           <div className="col-4 pl-0 text-left">
             <p
@@ -370,7 +370,7 @@ const Todo = ({ user, todo, globalTags, removeTask }) => {
             <DateButton user={user} todo={todo} />
           </div>
         </div>
-        <div className="row mx-1 my-1">
+        <div className="row mx-2 my-2">
           <button
             style={{
               color: "white",
@@ -455,7 +455,7 @@ const TodoList = (props) => {
     return (
       <>
         <TodoForm user={props.user} />
-        <div className="container-fluid px-0">
+        <div className="container-fluid mt-3 px-0">
           {todos.map((todo) => (
             <Todo
               todo={todo}
@@ -469,7 +469,7 @@ const TodoList = (props) => {
     );
   } else {
     return (
-      <div className="container mt-1">
+      <div className="container mt-1 px-0">
         {tagLists.map((tag, index) => {
           let tagIndex = index;
           for (let i = 0; i < tag.list.length; i++) {
@@ -477,11 +477,16 @@ const TodoList = (props) => {
           }
 
           return (
-            <div className="container my-5">
-              <h2 style={{ color: props.user.color }}>{tag.name}</h2>
+            <div className="container my-5 px-0">
+              <h2 style={{ color: props.user.color }} className="mx-3">{tag.name}</h2>
               <>
                 {tag.list.map((todo) => (
-                  <Todo todo={todo} />
+                  <Todo
+                  todo={todo}
+                  user={props.user}
+                  removeTask={removeTask}
+                  globalTags={globalTags}
+                />
                 ))}
               </>
             </div>
