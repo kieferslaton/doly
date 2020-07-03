@@ -129,19 +129,23 @@ const Signup = ({passUser, handleSignupClose}) => {
   const [signupPass1, setSignupPass1] = useState("");
   const [signupPass2, setSignupPass2] = useState("");
   const [signupUserError, setSignupUserError] = useState("");
-  const [signupPass1Val, setSignupPass1Val] = useState({
-    length: false,
-    nums: false,
-  });
+  const [signupPass1Length, setSignupPass1Length] = useState(false);
+  const [signupPass1Nums, setSignupPass1Nums] = useState(false);
   const [signupPass2Error, setSignupPass2Error] = useState("");
 
   const handleSignupPassChange = (e) => {
-    if(e.target.value.length > 10){
-      setSignupPass1Val({...signupPass1Val, length: true})
-    }
+    console.log(e.target.value);
+    if(e.target.value.length >= 10){
+      console.log(e.target.value.length)
+      setSignupPass1Length(true);
+    } else {
+      setSignupPass1Length(false)
+    };
     if(/\d/.test(e.target.value)){
-      setSignupPass1Val({...signupPass1Val, nums: true})
-    }
+      setSignupPass1Nums(true)
+    } else {
+      setSignupPass1Nums(false)
+    };
     setSignupPass1(e.target.value);
   }
 
@@ -201,10 +205,10 @@ const Signup = ({passUser, handleSignupClose}) => {
                     onChange={handleSignupPassChange}
                   />
                   <small>
-                    Password must be at least 10 characters.  <FaCheck style={{color: 'green'}}className={signupPass1Val.length ? '' : 'd-none'}/>
+                    Password must be at least 10 characters. <FaCheck style={{color: 'green'}}className={signupPass1Length ? '' : 'd-none'}/>
                   </small><br />
                   <small>
-                    Password must contain at least one number.  <FaCheck style={{color: 'green'}}className={signupPass1Val.nums ? '' : 'd-none'}/>
+                    Password must contain at least one number.  <FaCheck style={{color: 'green'}}className={signupPass1Nums ? '' : 'd-none'}/>
                   </small>
                 </div>
                 <div className="form-group">
