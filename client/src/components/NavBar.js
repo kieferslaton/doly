@@ -180,7 +180,7 @@ const NavBar = (props) => {
                 onClick={(e) =>
                   props.setUserColor(e.target.style.backgroundColor)
                 }
-                style={{ backgroundColor: "#4e83a0", height: 30, width: 30 }}
+                style={{ backgroundColor: "#e4c642", height: 30, width: 30 }}
               ></div>
             </div>
             <div className="row justify-content-center">
@@ -189,21 +189,21 @@ const NavBar = (props) => {
                 onClick={(e) =>
                   props.setUserColor(e.target.style.backgroundColor)
                 }
-                style={{ backgroundColor: "#b09f38", height: 30, width: 30 }}
+                style={{ backgroundColor: "#7542e4", height: 30, width: 30 }}
               ></div>
               <div
                 className="m-1"
                 onClick={(e) =>
                   props.setUserColor(e.target.style.backgroundColor)
                 }
-                style={{ backgroundColor: "#b27e41", height: 30, width: 30 }}
+                style={{ backgroundColor: "#1bbe4f", height: 30, width: 30 }}
               ></div>
               <div
                 className="m-1"
                 onClick={(e) =>
                   props.setUserColor(e.target.style.backgroundColor)
                 }
-                style={{ backgroundColor: "#856197", height: 30, width: 30 }}
+                style={{ backgroundColor: "#f2a252", height: 30, width: 30 }}
               ></div>
             </div>
           </div>
