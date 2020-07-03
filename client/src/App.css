@@ -86,7 +86,7 @@ input:focus {
   border-bottom: none;
 }
 
-.navbar{
+.navbar {
   border-bottom: 1px solid #d3d3d3;
 }
 
@@ -128,4 +128,58 @@ input:focus {
 
 .todo-mobile:last-child{
   border-bottom: none;
+}
+
+.modal{
+  height: auto;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
+}
+
+
+
+#hero h1{
+  font-size: 70px;
+  font-weight: bold;
+  line-height: 1em;
+}
+
+.responsive-border{
+  border-right: 1px solid #d3d3d3;
+}
+
+.responsive-border:last-child{
+  border: none;
+}
+
+.login-form{
+  max-width: 400px;
+  text-align: center;
+  margin: 0 auto;
+  font-size: 1.2em;
+}
+
+.login-form button {
+  font-size: 1.1em;
+}
+
+@media only screen and (max-width: 768px) {
+  .responsive-border{
+    border: none;
+  }
+
+  .responsive-border::after{
+    content: "";
+    display: block;
+    margin: 0 auto;
+    padding-top: 20px;
+    width: 50%;
+    border-bottom: 1px solid #d3d3d3;
+  }
+
+  .responsive-border:last-child::after{
+    content: none;
+  }
 }

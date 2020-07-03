@@ -105,16 +105,44 @@ const LogOutButton = (props) => {
   );
 };
 
+const LogInButton = ({user, showLoginModal}) => {
+  if(!user){
+    return (
+    <div className="mx-2">
+    <button style={{fontWeight: 'bold', color:"#4260e4", border: `1px solid #4260e4`}} class="btn" onClick={showLoginModal}>Login</button>
+    </div>
+    )
+  } else {
+    return <></>
+  }
+}
+
+const SignUpButton = ({user, showSignupModal}) => {
+  if(!user){
+    return <button style={{fontWeight: 'bold', background: "#4260e4", color: 'white'}} class="btn" onClick={showSignupModal}>Sign Up</button>
+  } else {
+    return <></>
+  }
+}
+
 const NavBar = (props) => {
-  const navColor = props.user ? props.user.color : "#292b2c";
+  const navColor = props.user ? props.user.color : "#4260e4";
 
   return (
-    <nav class="navbar mb-5 py-2">
+    <nav class="navbar mb-4 mb-lg-1 py-2">
       <a class="navbar-brand m-0 p-0" href="#" style={{ color: navColor }}>
         do.ly
         <FaCheckDouble />
       </a>
       <div className="mr-1 row">
+        <LogInButton
+          user={props.user}
+          showLoginModal={props.showLoginModal}
+        />
+        <SignUpButton
+          user={props.user}
+          showSignupModal={props.showSignupModal}
+        />
         <SwitchButton
           user={props.user}
           isInbox={props.isInbox}
@@ -138,14 +166,14 @@ const NavBar = (props) => {
                 onClick={(e) =>
                   props.setUserColor(e.target.style.backgroundColor)
                 }
-                style={{ backgroundColor: "#B64B51", height: 30, width: 30 }}
+                style={{ backgroundColor: "#4260e4", height: 30, width: 30 }}
               ></div>
               <div
                 className="m-1"
                 onClick={(e) =>
                   props.setUserColor(e.target.style.backgroundColor)
                 }
-                style={{ backgroundColor: "#5f956b", height: 30, width: 30 }}
+                style={{ backgroundColor: "#f25252", height: 30, width: 30 }}
               ></div>
               <div
                 className="m-1"

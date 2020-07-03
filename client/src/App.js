@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { BrowserRouter as Router } from "react-router-dom";
+import { Modal } from 'semantic-ui-react'
+import hero from './hero.png'
 
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle";
@@ -42,62 +44,11 @@ const useWindowSize = () => {
   return windowSize;
 };
 
-function App() {
-  const [token, setToken] = useState(Cookies.get("token"));
-  const [user, setUser] = useState("");
-  const [usernames, setUsernames] = useState([]);
-  const [isLogin, setIsLogin] = useState(true);
+const Login = ({passUser, handleLoginClose}) => {
   const [loginUser, setLoginUser] = useState("");
   const [loginPass, setLoginPass] = useState("");
   const [loginUserError, setLoginUserError] = useState("");
   const [loginPassError, setLoginPassError] = useState("");
-  const [signupUser, setSignupUser] = useState("");
-  const [signupPass1, setSignupPass1] = useState("");
-  const [signupPass2, setSignupPass2] = useState("");
-  const [signupUserError, setSignupUserError] = useState("");
-  const [signupPass1Val, setSignupPass1Val] = useState({
-    length: false,
-    nums: false,
-  });
-  const [signupPass2Error, setSignupPass2Error] = useState("");
-  const [isInbox, setIsInbox] = useState(true);
-
-  const size = useWindowSize();
-
-  const setUserColor = (color) => {
-    if (user) {
-      axios
-        .post(`${url}/users/update/${user._id}`, {
-          username: user.username,
-          password: user.password,
-          color: color,
-        })
-        .then((res) => {
-          return axios.get(`${url}/users/${user._id}`).then((res) => {
-            setUser(res.data);
-          });
-        });
-    }
-  };
-
-  const handleTagsToggle = () => {
-    setIsInbox(!isInbox);
-  };
-
-  useEffect(() => {
-      if (user) setUser(user);
-  }, [user]);
-
-  useEffect(() => {
-    if (token) {
-      console.log(token);
-      const payload = { headers: { authorization: token } };
-      axios
-        .post(`${url}/users/accounts`, {}, payload)
-        .then((res) => setUser(res.data))
-        .catch((err) => console.log(err.status));
-    }
-  }, []);
 
   const handleLoginUserChange = (e) => {
     setLoginUser(e.target.value.toLowerCase());
@@ -106,16 +57,6 @@ function App() {
   const handleLoginPassChange = (e) => {
     setLoginPass(e.target.value);
   };
-
-  const handleSignupPassChange = (e) => {
-    if(e.target.value.length > 10){
-      setSignupPass1Val({...signupPass1Val, length: true})
-    }
-    if(/\d/.test(e.target.value)){
-      setSignupPass1Val({...signupPass1Val, nums: true})
-    }
-    setSignupPass1(e.target.value);
-  }
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
@@ -127,7 +68,8 @@ function App() {
       .then((res) => {
         handleLogin(res.data);
         return axios.get(`${url}/users/`).then((res) => {
-          setUser(res.data.find((user) => user.username === loginUser));
+          passUser(res.data.find((user) => user.username === loginUser));
+          handleLoginClose();
         });
       })
       .catch((err) => {
@@ -141,64 +83,10 @@ function App() {
       });
   };
 
-  const handleSignupSubmit = (e) => {
-    e.preventDefault();
-    axios
-      .post(`${url}/users/signup`, {
-        username: signupUser.toLowerCase(),
-        password: signupPass1,
-        password2: signupPass2,
-      })
-      .then((res) => {
-        console.log(res.data);
-        handleLogin(res.data);
-        return axios.get(`${url}/users/`).then((res) => {
-          console.log(res.data);
-          setUser(res.data.find((user) => user.username === signupUser.toLowerCase()));
-        });
-      })
-      .catch((err) => {
-        if (err.response.status === 401) {
-          setSignupUserError("");
-          setSignupPass2Error("Passwords don't match.");
-        } else if (err.response.status === 400) {
-          setSignupPass2Error("");
-          setSignupUserError("User already exists.");
-        }
-      });
-  };
-
-  const logOut = () => {
-    setUser("");
-    handleLogout(token);
-  };
-
-  if (!user) {
-    return (
-      <Router>
-        <NavBar user={user} logOut={logOut} size={size} />
-        <div className="container login-container">
-          <div className="row border rounded justify-content-center p-2">
-            <div className="col-10 col-md-6 text-center">
-              <button
-                onClick={() => setIsLogin(true)}
-                className={`${
-                  isLogin ? "btn-dark" : "border border-dark"
-                } btn w-50 font-weight-bold`}
-              >
-                Log In
-              </button>
-              <button
-                onClick={() => setIsLogin(false)}
-                className={`${
-                  isLogin ? "border border-dark" : "btn-dark"
-                } btn w-50 font-weight-bold`}
-              >
-                Sign Up
-              </button>
-              <form
-                className={`${isLogin ? "" : "d-none"} my-4`}
+  return(
+    <form
                 onSubmit={handleLoginSubmit}
+                className="login-form" 
               >
                 <div className="form-group">
                   <label>Username</label>
@@ -232,8 +120,62 @@ function App() {
                   Log In
                 </button>
               </form>
-              <form
-                className={`${isLogin ? "d-none" : ""} my-4`}
+  )
+}
+
+const Signup = ({passUser, handleSignupClose}) => {
+
+  const [signupUser, setSignupUser] = useState("");
+  const [signupPass1, setSignupPass1] = useState("");
+  const [signupPass2, setSignupPass2] = useState("");
+  const [signupUserError, setSignupUserError] = useState("");
+  const [signupPass1Val, setSignupPass1Val] = useState({
+    length: false,
+    nums: false,
+  });
+  const [signupPass2Error, setSignupPass2Error] = useState("");
+
+  const handleSignupPassChange = (e) => {
+    if(e.target.value.length > 10){
+      setSignupPass1Val({...signupPass1Val, length: true})
+    }
+    if(/\d/.test(e.target.value)){
+      setSignupPass1Val({...signupPass1Val, nums: true})
+    }
+    setSignupPass1(e.target.value);
+  }
+
+  const handleSignupSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post(`${url}/users/signup`, {
+        username: signupUser.toLowerCase(),
+        password: signupPass1,
+        password2: signupPass2,
+      })
+      .then((res) => {
+        console.log(res.data);
+        handleLogin(res.data);
+        return axios.get(`${url}/users/`).then((res) => {
+          console.log(res.data);
+          passUser(res.data.find((user) => user.username === signupUser.toLowerCase()));
+          handleSignupClose();
+        });
+      })
+      .catch((err) => {
+        if (err.response.status === 401) {
+          setSignupUserError("");
+          setSignupPass2Error("Passwords don't match.");
+        } else if (err.response.status === 400) {
+          setSignupPass2Error("");
+          setSignupUserError("User already exists.");
+        }
+      });
+  };
+
+  return (
+    <form
+                className="login-form" 
                 onSubmit={handleSignupSubmit}
               >
                 <div className="form-group">
@@ -283,10 +225,111 @@ function App() {
                   Sign Up
                 </button>
               </form>
+  )
+
+
+}
+
+const App = () => {
+  const [token, setToken] = useState(Cookies.get("token"));
+  const [user, setUser] = useState("");
+  const [isInbox, setIsInbox] = useState(true);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+
+  const size = useWindowSize();
+
+  const setUserColor = (color) => {
+    if (user) {
+      axios
+        .post(`${url}/users/update/${user._id}`, {
+          username: user.username,
+          password: user.password,
+          color: color,
+        })
+        .then((res) => {
+          return axios.get(`${url}/users/${user._id}`).then((res) => {
+            setUser(res.data);
+          });
+        });
+    }
+  };
+
+  const handleTagsToggle = () => {
+    setIsInbox(!isInbox);
+  };
+
+  useEffect(() => {
+      if (user) setUser(user);
+  }, [user]);
+
+  useEffect(() => {
+    if (token) {
+      console.log(token);
+      const payload = { headers: { authorization: token } };
+      axios
+        .post(`${url}/users/accounts`, {}, payload)
+        .then((res) => setUser(res.data))
+        .catch((err) => console.log(err.status));
+    }
+  }, []);
+
+  const logOut = () => {
+    setUser("");
+    handleLogout(token);
+  };
+
+  const passUser = (user) => {
+    setUser(user)
+  }
+
+  const showLoginModal = () => setShowLogin(true);
+  const showSignupModal = () => setShowSignup(true);
+  const handleLoginClose = () => setShowLogin(false);
+  const handleSignupClose = () => setShowSignup(false);
+
+  if (!user) {
+    return (
+      <>
+      <Router>
+        <NavBar user={user} logOut={logOut} size={size} showLoginModal={showLoginModal} showSignupModal={showSignupModal} />
+        <div className="container-fluid">
+          <div className="row justify-content-center mx-3 py-3" id="hero">
+            <div className="col-12 col-md-5 d-flex align-items-center">
+              <div className="my-auto mx-auto text-center">
+              <h1>Do <span style={{color: '#7da0f2'}}>More.</span></h1>
+              <h1>Stress <span style={{color: '#4260e4'}}>Less.</span></h1>
+              </div>
+            </div>
+            <div className="col-12 col-md-7 d-flex align-items-center p-0">
+              <img className="img-fluid m-0" src={hero} />
+            </div>
+          </div>
+          <div className="row justify-content-center text-center my-5">
+            <div className="col-10 col-md-4 responsive-border mb-4 py-md-2 px-lg-2 px-xl-5">
+              <h2 style={{color: "#f25252"}}>Get Stuff Done.</h2>
+              <p style={{color: "#bebebe", fontSize: "1.3em"}}>Do.ly operates using the principles of GTD, a proven system to help you get more done in less time.</p>
+            </div>
+            <div className="col-10 col-md-4 responsive-border mb-4 py-md-2 px-lg-5">
+              <h2 style={{color: "#f25252"}}>Be On Time.</h2>
+              <p style={{color: "#bebebe", fontSize: "1.3em"}}>Coming soon, Do.ly's calendar feature will make sure you're on time to every appointment.</p>
+            </div>
+            <div className="col-10 col-md-4 responsive-border mb-4 py-md-2 px-lg-5">
+              <h2 style={{color: "#f25252"}}>Work With Others.</h2>
+              <p style={{color: "#bebebe", fontSize: "1.3em"}}>Coming soon, Do.ly will support shared tasks and projects so your team can be as successful as possible.</p>
             </div>
           </div>
         </div>
+        <Modal size='small' open={showLogin} onClose={handleLoginClose}>
+          <Modal.Header>Login</Modal.Header>
+          <Modal.Content><Login passUser={passUser} handleLoginClose={handleLoginClose} /></Modal.Content>
+        </Modal>
+        <Modal size='small' open={showSignup} onClose={handleSignupClose}>
+          <Modal.Header>Sign Up</Modal.Header>
+          <Modal.Content><Signup passUser={passUser} handleSignupClose={handleSignupClose} /></Modal.Content>
+        </Modal>
       </Router>
+      </>
     );
   } else {
     if (size.width > 768) {

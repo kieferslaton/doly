@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import DatePicker from "react-mobile-datepicker";
 import { format } from "date-fns";
 import $ from "jquery";
 import {
@@ -179,6 +178,7 @@ const TagForm = (props) => {
         tags: tags,
       })
       .then((res) => console.log(res));
+    setAutoTags([])
   };
 
   return (
@@ -295,13 +295,13 @@ const Todo = ({ user, todo, globalTags, removeTask }) => {
   return (
     <>
       <div
-        className="row justify-content-center p-2 todo-mobile mx-0 mw-100 w-100"
+        className="row justify-content-center py-2 px-0 todo-mobile mx-0 mw-100 w-100"
         key={todo._id}
       >
         <div className="col-2 text-center my-auto mx-0 px-0">
           <CompleteButton user={user} todo={todo} markComplete={markComplete} />
         </div>
-        <div className={`${todo.complete ? "complete" : ""} col-7 my-auto`}>
+        <div className={`${todo.complete ? "complete" : ""} col-8 my-auto`}>
           {todo.task}
         </div>
         <div className="col-2 text-center">
