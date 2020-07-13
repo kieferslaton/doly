@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const config = require('../config');
 const router = require('express').Router();
 let User = require('../models/user-model');
 
@@ -35,7 +34,7 @@ router.route('/signup').post( async (req, res) => {
 
     const newUser = new User({username, password: await bcrypt.hash(password, 10), color})
     newUser.save().then(() => {
-        const token = jwt.sign({ userId: newUser._id }, config.JWT_SECRET, {expiresIn: '7d'})
+        const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {expiresIn: '7d'})
         res.json(token)
     }).catch(err => res.status(402).json('Error: ' + err));  
 })
@@ -49,7 +48,7 @@ router.route('/login').post( async (req, res) => {
 
         const passwordsMatch = await bcrypt.compare(password, user.password);
         if(passwordsMatch) {
-            const token = jwt.sign({userId: user._id}, config.JWT_SECRET, {expiresIn: '7d'})
+            const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'})
             res.status(200).json(token)
         } else {
             res.status(401).json()
@@ -63,7 +62,7 @@ router.route('/accounts').post(async (req, res) => {
         return res.status(401).send('No Authorization')
     }
 
-    const {userId} = jwt.verify(auth, config.JWT_SECRET)
+    const {userId} = jwt.verify(auth, process.env.JWT_SECRET)
     const user = await User.findOne({_id: userId})
     if(user){
         res.status(200).json(user)
