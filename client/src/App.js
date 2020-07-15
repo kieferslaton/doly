@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { BrowserRouter as Router } from "react-router-dom";
-import { Modal } from 'semantic-ui-react'
+import { Modal } from 'react-bootstrap'
 import hero from './hero.png'
 
-import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle";
 import "./App.css";
 
@@ -324,13 +324,17 @@ const App = () => {
             </div>
           </div>
         </div>
-        <Modal size='small' open={showLogin} onClose={handleLoginClose}>
-          <Modal.Header>Login</Modal.Header>
-          <Modal.Content><Login passUser={passUser} handleLoginClose={handleLoginClose} /></Modal.Content>
+        <Modal centered show={showLogin} onHide={handleLoginClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Login</Modal.Title>
+          </Modal.Header>
+          <Modal.Body><Login passUser={passUser} handleLoginClose={handleLoginClose} /></Modal.Body>
         </Modal>
-        <Modal size='small' open={showSignup} onClose={handleSignupClose}>
-          <Modal.Header>Sign Up</Modal.Header>
-          <Modal.Content><Signup passUser={passUser} handleSignupClose={handleSignupClose} /></Modal.Content>
+        <Modal centered show={showSignup} onHide={handleSignupClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Sign Up</Modal.Title>
+          </Modal.Header>
+          <Modal.Body><Signup passUser={passUser} handleSignupClose={handleSignupClose} /></Modal.Body>
         </Modal>
       </Router>
       </>
