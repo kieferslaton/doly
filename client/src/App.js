@@ -5,8 +5,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Modal } from 'react-bootstrap'
 import hero from './hero.png'
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle";
 import "./App.css";
 
 import TodoList from "./components/TodoList";
